@@ -1,11 +1,15 @@
-# Builds installers for every desktop platform and attaches them to a draft
-# GitHub Release whenever a version tag (v0.1.0, v0.2.0, …) is pushed.
-# Publishing the draft is a manual click — nothing ships without review.
+# Builds installers for every desktop platform and attaches them to the
+# GitHub Release for the pushed version tag (v0.1.0, v0.2.0, …) — creating
+# the release if it doesn't exist yet.
 name: Release
 
 on:
   push:
     tags: ['v*']
+
+# The default GITHUB_TOKEN is read-only on this repo; releases need write.
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -42,7 +46,9 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'Bluebird Writer ${{ github.ref_name }}'
-          releaseDraft: true
+          # Upload into the existing release for this tag (the usual flow:
+          # create the release on GitHub, then push the tag), or create it.
+          releaseDraft: false
           prerelease: false
 
       # The user-facing Linux download, same shape as bluebird-focus:

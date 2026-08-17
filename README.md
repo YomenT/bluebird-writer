@@ -100,10 +100,11 @@ icon — no root needed. Updating is re-running the installer from a newer
 tarball.
 
 Alternatively, pushing a `v*` tag runs `.github/workflows/release.yml`, which
-builds the Linux bundles **and** the Windows NSIS installer on CI and attaches
-everything to a draft release — publish after review. Remember to bump the
-version in `package.json`, `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml`,
-`install.sh`, and `package-release.sh` together.
+builds the Linux bundles (including the tarball above) **and** the Windows
+NSIS installer on CI and attaches everything to the release for that tag,
+creating it if needed. Remember to bump the version in `package.json`,
+`src-tauri/tauri.conf.json`, and `src-tauri/Cargo.toml` together — the
+release scripts pick the version up automatically.
 
 The app is linked from the Bluebird Suite menu in the Bluebird Documentation
 header.

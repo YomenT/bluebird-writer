@@ -1,0 +1,175 @@
+.App {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    background: var(--surface-1);
+}
+
+.Main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ─── Top bar ────────────────────────────────────────────────────── */
+.TopBar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.TopBar__title {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.TopBar__title-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.TopBar__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--warning);
+    flex-shrink: 0;
+}
+
+.TopBar__dot--saving { background: var(--accent); }
+.TopBar__dot--error  { background: var(--danger); }
+
+.IconButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background var(--duration-fast), color var(--duration-fast);
+}
+
+.IconButton:hover {
+    background: var(--surface-3);
+    color: var(--text-primary);
+}
+
+.IconButton--active,
+.IconButton--active:hover {
+    background: var(--accent-subtle);
+    color: var(--accent);
+}
+
+/* ─── Mode switch (Write / Split / Preview) ──────────────────────── */
+.ModeSwitch {
+    display: flex;
+    gap: 2px;
+    padding: 3px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+.ModeSwitch__btn {
+    padding: 3px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background var(--duration-fast), color var(--duration-fast);
+}
+
+.ModeSwitch__btn:hover {
+    color: var(--text-primary);
+}
+
+.ModeSwitch__btn--active,
+.ModeSwitch__btn--active:hover {
+    background: var(--accent-subtle);
+    color: var(--accent);
+}
+
+/* ─── Workspace ──────────────────────────────────────────────────── */
+.Workspace {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+.Workspace__pane {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    animation: fadeIn var(--duration-normal) var(--ease-out);
+}
+
+.Workspace__pane--aside:not(:first-child) {
+    border-left: 1px solid var(--border);
+}
+
+.EmptyState {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 14px;
+}
+
+/* ─── Status bar ─────────────────────────────────────────────────── */
+.StatusBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: 30px;
+    padding: 0 14px;
+    border-top: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+}
+
+.StatusBar__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.SaveState--unsaved { color: var(--warning); }
+.SaveState--saving  { color: var(--accent); }
+.SaveState--error   { color: var(--danger); }
+
+.DemoBadge {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--accent-subtle);
+    color: var(--accent);
+    white-space: nowrap;
+}
+
+.StatusBar__right {
+    white-space: nowrap;
+}

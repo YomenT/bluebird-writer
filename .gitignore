@@ -1,0 +1,10 @@
+node_modules/
+dist/
+src-tauri/target/
+src-tauri/gen/
+*.log
+.DS_Store
+
+# Release packaging artifacts (package-release.sh)
+release-tmp/
+*.tar.gz

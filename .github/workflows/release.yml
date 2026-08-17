@@ -1,0 +1,45 @@
+# Builds installers for every desktop platform and attaches them to a draft
+# GitHub Release whenever a version tag (v0.1.0, v0.2.0, …) is pushed.
+# Publishing the draft is a manual click — nothing ships without review.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ubuntu-22.04 # AppImage + .deb
+          - platform: windows-latest # NSIS installer
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Linux dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file \
+            libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - run: npm ci
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NO_STRIP: 1 # AppImage builds need this on some linuxdeploy versions
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'Bluebird Writer ${{ github.ref_name }}'
+          releaseDraft: true
+          prerelease: false

@@ -1,0 +1,494 @@
+.SyncOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.45);
+    animation: fadeIn var(--duration-fast);
+}
+
+.SyncPanel {
+    display: flex;
+    flex-direction: column;
+    width: 560px;
+    max-width: 100%;
+    max-height: 82vh;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-lg);
+    animation: slideUp var(--duration-normal) var(--ease-out);
+}
+
+/* ─── Header ─────────────────────────────────────────────────────── */
+.SyncPanel__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.SyncPanel__title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.SyncPanel__subtitle {
+    margin-top: 3px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+}
+
+.SyncPanel__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background var(--duration-fast), color var(--duration-fast);
+}
+
+.SyncPanel__close:hover {
+    background: var(--surface-3);
+    color: var(--text-primary);
+}
+
+/* ─── Setup (no key yet) ─────────────────────────────────────────── */
+.SyncPanel__setup {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 20px 20px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+}
+
+.SyncPanel__keyrow {
+    display: flex;
+    gap: 8px;
+}
+
+.SyncPanel__input {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    outline: none;
+    transition: border-color var(--duration-fast);
+}
+
+.SyncPanel__input:focus {
+    border-color: var(--border-active);
+}
+
+.SyncPanel__input::placeholder {
+    color: var(--text-placeholder);
+    font-family: var(--font-mono);
+}
+
+.SyncPanel__link {
+    align-self: flex-start;
+    border: none;
+    background: none;
+    padding: 0;
+    color: var(--accent);
+    font-size: 12.5px;
+    cursor: pointer;
+}
+
+.SyncPanel__link:hover {
+    text-decoration: underline;
+}
+
+.SyncPanel__hint {
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+
+.SyncPanel__hint code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--surface-3);
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
+.SyncPanel__input--short {
+    max-width: 250px;
+}
+
+/* ─── Toolbar ────────────────────────────────────────────────────── */
+.SyncPanel__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.SyncPanel__selectall {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.SyncPanel__toolbar-actions {
+    display: flex;
+    gap: 6px;
+}
+
+/* ─── Search & filters ───────────────────────────────────────────── */
+.SyncPanel__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.SyncPanel__search {
+    flex: 1 1 180px;
+    min-width: 150px;
+    padding: 6px 11px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--text-primary);
+    font-size: 12.5px;
+    outline: none;
+    transition: border-color var(--duration-fast);
+}
+
+.SyncPanel__search::placeholder {
+    color: var(--text-placeholder);
+}
+
+.SyncPanel__search:focus {
+    border-color: var(--border-active);
+}
+
+.SyncPanel__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.SyncPanel__chip {
+    padding: 4px 11px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color var(--duration-fast), color var(--duration-fast), background var(--duration-fast);
+}
+
+.SyncPanel__chip:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+.SyncPanel__chip--active,
+.SyncPanel__chip--active:hover {
+    background: var(--accent-subtle);
+    border-color: var(--accent-muted);
+    color: var(--accent);
+}
+
+.SyncPanel__group-check {
+    display: flex;
+    align-items: center;
+}
+
+.SyncPanel__group-check input {
+    accent-color: var(--accent);
+}
+
+.SyncPanel__nomatch {
+    padding: 2px 8px 8px 30px;
+}
+
+/* ─── Document list ──────────────────────────────────────────────── */
+.SyncPanel__list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    list-style: none;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.SyncPanel__sublist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+/* ─── Connection group header ────────────────────────────────────── */
+.SyncPanel__group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 8px 5px;
+    position: sticky;
+    top: 0;
+    background: var(--surface-raised);
+    z-index: 1;
+}
+
+.SyncPanel__group-name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.SyncPanel__group-name--personal { color: var(--accent); }
+.SyncPanel__group-name--workspace { color: var(--success); }
+
+.SyncPanel__group-remove {
+    margin-left: auto;
+    border: none;
+    background: none;
+    padding: 2px 6px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--duration-fast), color var(--duration-fast);
+}
+
+.SyncPanel__group:hover .SyncPanel__group-remove,
+.SyncPanel__group-remove:focus-visible {
+    opacity: 1;
+}
+
+.SyncPanel__group-remove:hover {
+    color: var(--danger);
+}
+
+.SyncPanel__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-radius: var(--radius-sm);
+    padding: 0 8px;
+    transition: background var(--duration-fast);
+}
+
+.SyncPanel__row:hover {
+    background: var(--surface-3);
+}
+
+.SyncPanel__doc {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.SyncPanel__type {
+    flex-shrink: 0;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.SyncPanel__type--space {
+    background: var(--accent-subtle);
+    color: var(--accent);
+}
+
+.SyncPanel__type--page {
+    background: var(--surface-3);
+    color: var(--text-secondary);
+}
+
+.SyncPanel__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.SyncPanel__status {
+    flex-shrink: 0;
+    font-size: 11.5px;
+    font-weight: 500;
+}
+
+.SyncPanel__status--new,
+.SyncPanel__status--updated { color: var(--success); }
+.SyncPanel__status--up-to-date { color: var(--text-tertiary); }
+.SyncPanel__status--conflict { color: var(--warning); }
+.SyncPanel__status--error { color: var(--danger); }
+
+/* ─── Review stage ───────────────────────────────────────────────── */
+.SyncPanel__review-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.SyncPanel__review-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.SyncPanel__review-title--conflict { color: var(--warning); }
+.SyncPanel__review-title--changed  { color: var(--accent); }
+.SyncPanel__review-title--new      { color: var(--success); }
+.SyncPanel__review-title--error    { color: var(--danger); }
+
+.SyncPanel__conn {
+    flex-shrink: 0;
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+}
+
+.SyncPanel__warning {
+    margin: 0 8px 6px 34px;
+    font-size: 11.5px;
+    color: var(--warning);
+}
+
+.SyncPanel__diff {
+    margin: 2px 8px 10px 34px;
+}
+
+.SyncPanel__ghost--small {
+    padding: 3px 9px;
+    font-size: 11.5px;
+    flex-shrink: 0;
+}
+
+/* ─── Footer ─────────────────────────────────────────────────────── */
+.SyncPanel__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+}
+
+.SyncPanel__overwrite {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.SyncPanel__foot-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+/* ─── Buttons & bits ─────────────────────────────────────────────── */
+.SyncPanel__primary {
+    padding: 7px 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--duration-fast);
+}
+
+.SyncPanel__primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.SyncPanel__primary:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.SyncPanel__ghost {
+    padding: 5px 11px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: border-color var(--duration-fast), color var(--duration-fast);
+}
+
+.SyncPanel__ghost:hover:not(:disabled) {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+.SyncPanel__ghost:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.SyncPanel__muted {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.SyncPanel__error {
+    margin: 0 20px 12px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    background: rgba(239, 68, 68, 0.08);
+    font-size: 12.5px;
+    color: var(--danger);
+}
+
+.SyncPanel__list input[type="checkbox"],
+.SyncPanel__selectall input,
+.SyncPanel__overwrite input {
+    accent-color: var(--accent);
+}

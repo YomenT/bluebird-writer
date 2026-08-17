@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-VERSION="0.1.0"
+# Version comes from tauri.conf.json so release tooling never drifts from the app.
+VERSION="$(grep -oP '"version":\s*"\K[^"]+' src-tauri/tauri.conf.json)"
 APPIMAGE="src-tauri/target/release/bundle/appimage/bluebird-writer_${VERSION}_amd64.AppImage"
 ICON="src-tauri/icons/128x128.png"
 OUT="bluebird-writer_${VERSION}_linux.tar.gz"

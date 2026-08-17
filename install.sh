@@ -3,7 +3,6 @@ set -e
 
 APP_NAME="Bluebird Writer"
 APP_ID="com.bluebird.writer"
-APPIMAGE="bluebird-writer_0.1.0_amd64.AppImage"
 ICON="128x128.png"
 
 BIN_DIR="$HOME/.local/bin"
@@ -13,18 +12,19 @@ INSTALL_PATH="$BIN_DIR/bluebird-writer"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Any version of the AppImage shipped alongside this script.
+APPIMAGE="$(cd "$SCRIPT_DIR" && ls bluebird-writer_*_amd64.AppImage 2>/dev/null | head -1)"
+if [ -z "$APPIMAGE" ]; then
+    echo "Error: no bluebird-writer AppImage found in the same directory as this script."
+    exit 1
+fi
+
 if [ -f "$INSTALL_PATH" ]; then
     ACTION="Updating"
 else
     ACTION="Installing"
 fi
 echo "$ACTION $APP_NAME..."
-
-# Check required files are present
-if [ ! -f "$SCRIPT_DIR/$APPIMAGE" ]; then
-    echo "Error: $APPIMAGE not found in the same directory as this script."
-    exit 1
-fi
 
 # Create directories
 mkdir -p "$BIN_DIR" "$ICON_DIR" "$DESKTOP_DIR"

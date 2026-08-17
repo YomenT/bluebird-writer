@@ -35,6 +35,7 @@ jobs:
       - run: npm ci
 
       - uses: tauri-apps/tauri-action@v0
+        id: tauri
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NO_STRIP: 1 # AppImage builds need this on some linuxdeploy versions
@@ -43,3 +44,22 @@ jobs:
           releaseName: 'Bluebird Writer ${{ github.ref_name }}'
           releaseDraft: true
           prerelease: false
+
+      # The user-facing Linux download, same shape as bluebird-focus:
+      # a tarball bundling the AppImage with install.sh (desktop entry, icon,
+      # ~/.local install — no root).
+      - name: Package Linux tarball (AppImage + install.sh)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: ./package-release.sh
+
+      - name: Attach Linux tarball to the release
+        if: matrix.platform == 'ubuntu-22.04'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TARBALL=$(ls bluebird-writer_*_linux.tar.gz)
+          curl -sf -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Content-Type: application/gzip" \
+            --data-binary @"$TARBALL" \
+            "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.tauri.outputs.releaseId }}/assets?name=$TARBALL"

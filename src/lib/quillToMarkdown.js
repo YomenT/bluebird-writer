@@ -16,6 +16,45 @@ const turndown = new TurndownService({
 })
 turndown.use(gfm)
 
+// Quill represents a blank line as <p><br></p>; markdown has no equivalent
+// (blank lines collapse), so emit a lone <br> paragraph — marked converts
+// that straight back to <p><br></p>, making vertical spacing round-trip
+// safe instead of silently disappearing (BBW-2).
+turndown.addRule('quillBlankLine', {
+  filter: (node) =>
+    node.nodeName === 'P' &&
+    (node.childNodes.length === 0 ||
+      (node.childNodes.length === 1 && node.firstChild.nodeName === 'BR')),
+  replacement: () => '\n\n<br>\n\n',
+})
+
+// Alignment / indent / direction classes live on paragraphs and headings;
+// turndown's built-in block rules outrank keep(), so these need a rule of
+// their own to survive as literal HTML.
+turndown.addRule('quillBlockFormat', {
+  filter: (node) =>
+    /^(P|H[1-6])$/.test(node.nodeName) &&
+    /\bql-(align|indent|direction)-/.test(node.getAttribute('class') || ''),
+  replacement: (content, node) => `\n\n${node.outerHTML}\n\n`,
+})
+
+// Formats markdown cannot express ride along as literal HTML instead of
+// being stripped (BBW-2: highlights vanished on every round trip). Markdown
+// permits embedded HTML, marked passes it through, and Quill reads it as its
+// own formatting again.
+turndown.keep((node) => {
+  const name = node.nodeName
+  if (name === 'U' || name === 'SUB' || name === 'SUP') return true
+  // Highlight / text colour, and Quill font & size runs.
+  if (name === 'SPAN') {
+    return (
+      Boolean(node.getAttribute('style')) ||
+      /\bql-(font|size)-/.test(node.getAttribute('class') || '')
+    )
+  }
+  return false
+})
+
 function convertCodeBlocks(doc) {
   doc.body.querySelectorAll('.ql-code-block-container').forEach((container) => {
     const lines = [...container.querySelectorAll('.ql-code-block')]
@@ -26,6 +65,17 @@ function convertCodeBlocks(doc) {
     code.textContent = lines.map((l) => l.textContent).join('\n')
     pre.appendChild(code)
     container.replaceWith(pre)
+  })
+}
+
+// Quill has no concept of "loose" lists, and the gfm task-list rule only
+// recognises a checkbox that sits directly under its <li> — so unwrap the
+// paragraph wrappers markdown round trips introduce (BBW-2 family).
+function unwrapListItemParagraphs(doc) {
+  doc.body.querySelectorAll('li > p').forEach((p) => {
+    const li = p.parentNode
+    while (p.firstChild) li.insertBefore(p.firstChild, p)
+    p.remove()
   })
 }
 
@@ -71,6 +121,19 @@ function nestIndentedLists(doc) {
   })
 }
 
+// marked re-parses our lone "<br>" blank-line marker as a top-level HTML
+// block (no <p> wrapper), so canonical round trips see body-level <br>s.
+// Rewrap them so the quillBlankLine rule fires identically every pass.
+function rewrapBareLineBreaks(doc) {
+  ;[...doc.body.children].forEach((el) => {
+    if (el.tagName === 'BR') {
+      const p = doc.createElement('p')
+      el.replaceWith(p)
+      p.appendChild(el)
+    }
+  })
+}
+
 function stripArtifacts(doc) {
   // Editor cursor markers that sometimes leak into saved content.
   doc.body.querySelectorAll('.ql-cursor').forEach((el) => el.remove())
@@ -91,8 +154,10 @@ function stripArtifacts(doc) {
 export function quillHtmlToMarkdown(html) {
   const doc = new DOMParser().parseFromString(html || '', 'text/html')
   convertCodeBlocks(doc)
+  unwrapListItemParagraphs(doc)
   convertChecklists(doc)
   nestIndentedLists(doc)
+  rewrapBareLineBreaks(doc)
   stripArtifacts(doc)
   return turndown.turndown(doc.body.innerHTML)
 }

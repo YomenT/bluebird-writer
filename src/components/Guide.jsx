@@ -119,6 +119,11 @@ const SECTIONS = [
         md: 'Simple tags such as <strong>this one</strong> are allowed.',
         note: 'HTML is sanitised before it renders, so scripts and other unsafe tags are stripped.',
       },
+      {
+        label: 'Highlight & text colour',
+        md: 'Markdown has no syntax for these, so use HTML: <span style="background-color: rgba(251, 191, 36, 0.35);">highlighted</span> and <span style="color: #e5484d;">coloured</span> text.',
+        note: 'Syncing keeps these intact — they arrive in Bluebird Documentation as real highlights and text colours, and highlighted documents pull back the same way.',
+      },
     ],
   },
 ]

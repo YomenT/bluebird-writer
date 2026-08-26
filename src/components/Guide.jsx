@@ -24,10 +24,10 @@ const SECTIONS = [
         md: [
           'A blank line starts a new paragraph.',
           '',
-          'End a line with two spaces  ',
-          'to break the line without a new paragraph.',
+          'A single Enter breaks the line',
+          'without starting a new one.',
         ].join('\n'),
-        note: 'A single newline on its own is treated as a space, not a line break.',
+        note: 'Some Markdown tools need two trailing spaces to break a line — here a plain Enter is enough. Two spaces still work if you are used to them.',
       },
     ],
   },

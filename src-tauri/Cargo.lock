@@ -297,6 +297,7 @@ dependencies = [
  "tauri-plugin-dialog",
  "tauri-plugin-opener",
  "trash",
+ "webkit2gtk",
 ]
 
 [[package]]

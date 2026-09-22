@@ -22,12 +22,14 @@ const SECTIONS = [
       {
         label: 'Paragraphs & line breaks',
         md: [
-          'A blank line starts a new paragraph.',
+          'Press Enter once for a new line.',
+          'It is spaced just like Enter in Bluebird Documentation.',
           '',
-          'A single Enter breaks the line',
-          'without starting a new one.',
+          '<br>',
+          '',
+          'A line holding only <br> adds an empty line.',
         ].join('\n'),
-        note: 'Some Markdown tools need two trailing spaces to break a line — here a plain Enter is enough. Two spaces still work if you are used to them.',
+        note: 'A blank line between paragraphs looks the same as a single Enter. For extra space, put <br> on a line of its own — that is how an empty line from Bluebird Documentation comes across in a sync.',
       },
     ],
   },

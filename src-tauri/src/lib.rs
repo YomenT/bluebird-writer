@@ -152,9 +152,56 @@ fn rename_markdown_file(path: String, name: String) -> Result<String, String> {
     Ok(dest.to_string_lossy().into_owned())
 }
 
+// Spell-check languages for WebKitGTK, from the user's locale (LANG=de_DE.UTF-8
+// -> de_DE) with English as a fallback. Languages without an installed
+// dictionary are ignored by enchant.
+#[cfg(target_os = "linux")]
+fn spell_languages() -> Vec<String> {
+    let mut langs = Vec::new();
+    for var in ["LC_ALL", "LC_MESSAGES", "LANG"] {
+        if let Ok(value) = std::env::var(var) {
+            let lang = value.split(['.', '@']).next().unwrap_or("").to_string();
+            if !lang.is_empty() && lang != "C" && lang != "POSIX" {
+                langs.push(lang);
+                break;
+            }
+        }
+    }
+    if !langs.iter().any(|l| l == "en_US") {
+        langs.push("en_US".into());
+    }
+    langs
+}
+
+// BBW-4: WebView2 (Windows) honours the editor's spellcheck attribute on its
+// own, but WebKitGTK keeps spell checking disabled until the web context
+// turns it on. Suggestions then appear in the native right-click menu.
+#[cfg(target_os = "linux")]
+fn enable_spell_check(app: &tauri::App) {
+    use tauri::Manager;
+    use webkit2gtk::{WebContextExt, WebViewExt};
+
+    let Some(window) = app.get_webview_window("main") else {
+        return;
+    };
+    let _ = window.with_webview(|webview| {
+        if let Some(context) = webview.inner().context() {
+            let langs = spell_languages();
+            let refs: Vec<&str> = langs.iter().map(String::as_str).collect();
+            context.set_spell_checking_languages(&refs);
+            context.set_spell_checking_enabled(true);
+        }
+    });
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .setup(|_app| {
+            #[cfg(target_os = "linux")]
+            enable_spell_check(_app);
+            Ok(())
+        })
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![

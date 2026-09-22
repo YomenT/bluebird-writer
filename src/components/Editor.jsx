@@ -5,16 +5,17 @@ import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { syntaxHighlighting, HighlightStyle } from '@codemirror/language'
 import { tags } from '@lezer/highlight'
+import { blockDecorations, spacingTheme, LINE_HEIGHT } from '../lib/editorDecorations'
 import '../css/Editor.css'
 
 // Markdown gets styled in place (iA-Writer style) rather than colour-coded
 // like source code. Colours come from the suite CSS variables so the same
-// definition works in both themes.
+// definition works in both themes. Heading sizes are set per line in
+// editorDecorations.js, together with the heading's spacing.
 const mdHighlight = HighlightStyle.define([
-  { tag: tags.heading1, fontSize: '1.6em', fontWeight: '700', letterSpacing: '-0.02em' },
-  { tag: tags.heading2, fontSize: '1.35em', fontWeight: '700' },
-  { tag: tags.heading3, fontSize: '1.18em', fontWeight: '600' },
-  { tag: tags.heading4, fontSize: '1.05em', fontWeight: '600' },
+  { tag: tags.heading1, fontWeight: '700', letterSpacing: '-0.02em' },
+  { tag: tags.heading2, fontWeight: '700' },
+  { tag: [tags.heading3, tags.heading4], fontWeight: '600' },
   { tag: [tags.heading5, tags.heading6], fontWeight: '600' },
   { tag: tags.strong, fontWeight: '700' },
   { tag: tags.emphasis, fontStyle: 'italic' },
@@ -37,7 +38,7 @@ const editorTheme = EditorView.theme({
   },
   '.cm-scroller': {
     fontFamily: 'var(--font-prose)',
-    lineHeight: '1.75',
+    lineHeight: String(LINE_HEIGHT),
     overflow: 'auto',
   },
   '.cm-content': {
@@ -80,6 +81,10 @@ export default function Editor({ initialContent, onChange, onSave }) {
           placeholder('Start writing…'),
           markdown({ base: markdownLanguage }),
           syntaxHighlighting(mdHighlight),
+          blockDecorations,
+          // BBW-4: the browser's spell checker. On Linux the native side
+          // must also enable it in WebKitGTK (src-tauri/src/lib.rs).
+          EditorView.contentAttributes.of({ spellcheck: 'true' }),
           keymap.of([
             {
               key: 'Mod-s',
@@ -95,6 +100,7 @@ export default function Editor({ initialContent, onChange, onSave }) {
             if (update.docChanged) onChangeRef.current(update.state.doc.toString())
           }),
           editorTheme,
+          spacingTheme,
         ],
       }),
       parent: hostRef.current,

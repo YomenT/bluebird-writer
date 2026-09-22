@@ -1,6 +1,6 @@
 [package]
 name = "bluebird-writer"
-version = "0.1.2"
+version = "0.2.0"
 description = "Bluebird Writer — minimal offline markdown editor for the Bluebird Suite"
 edition = "2021"
 
